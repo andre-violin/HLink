@@ -2,31 +2,48 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 
 import api from '../services/api';
-import { bold } from 'ansi-colors';
 
 export default class Home extends Component {
+	
 	static navigationOptions = {
-		title: 'HyperLink'
+		title: 'HLink'
 	};
 
 	state = {
-		docs: []
+		productInfo: {},
+		docs: [],
+		page: 1
 	};
 
-	componentDidMount() {
+	componentDidMount() {		
 		this.loadLinks();
 	}
 
-	loadLinks = async () => {
+	loadLinks = async (page = 1) => {
 		try {
-			const response = await api.get('/products');
+			const response = await api.get(`/products?page=${page}`);
 
-			const { docs } = response.data;
+			const { docs, ...productInfo } = response.data;
 
-			this.setState({ docs });
+			this.setState(
+				{ 
+					docs: [...this.state.docs, ...docs], 
+					productInfo,
+					page
+				});
 		} catch (error) {
 			console.log(error);
 		}
+	};
+
+	loadMore = () => {
+		const { page, productInfo } = this.state;
+
+		if(page === productInfo.pages) return;
+
+		const pageNumber = page + 1;
+
+		this.loadLinks(pageNumber);
 	};
 
 	renderItem = ({ item }) => {
@@ -35,7 +52,12 @@ export default class Home extends Component {
 				<Text style={styles.productTitle}>{item.title}</Text>
 				<Text style={styles.productDescription}>{item.description}</Text>
 
-				<TouchableOpacity style={styles.productButton} onPress={() => {}}>
+				<TouchableOpacity
+					style={styles.productButton} 
+					onPress={() => {
+						this.props.navigation.navigate("Hyperlink", { hyperlink: item });
+					}}
+				>
 					<Text style={styles.productButtonText}>Acessar</Text>
 				</TouchableOpacity>
 			</View>
@@ -50,6 +72,8 @@ export default class Home extends Component {
 					data={this.state.docs}
 					keyExtractor={(item) => item._id}
 					renderItem={this.renderItem}
+					onEndReached={this.loadMore}
+					onEndReachedThreshold={0.1}
 				/>
 			</View>
 		);
@@ -66,16 +90,15 @@ const styles = StyleSheet.create({
 	},
 	productContainer: {
     backgroundColor: "#FFF",
-    borderColor: "#DDD",
     borderRadius: 5,
     padding: 20,
 		marginBottom: 20,
 		
 		shadowColor: '#000',
-    shadowOffset: { width: 0, height: 15 },
-    shadowOpacity: 0.8,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
 		shadowRadius: 5,
-		elevation: 5,
+		elevation: 2,
   },
   productTitle: {
     fontSize: 18,
@@ -91,16 +114,19 @@ const styles = StyleSheet.create({
 	productButton: {
 		height: 42,
 		borderRadius: 5,
-		borderWidth: 2,
-		borderColor: "#333",
-		backgroundColor: "transparent",
+		backgroundColor: "#ddd",
 		justifyContent: "center",
 		alignItems: "center",
-		marginTop: 10
+		marginTop: 15,
+		shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
+		shadowRadius: 5,
+		elevation: 1,
 	},
 	productButtonText: {
 		fontSize: 16,
 		color: "#333",
-		fontWeight: "bold"
+		fontWeight: "bold",
 	}
 });

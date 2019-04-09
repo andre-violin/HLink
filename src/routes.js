@@ -1,10 +1,12 @@
 import { createStackNavigator } from 'react-navigation';
 
 import Home from './pages/home';
+import Hyperlink from './pages/hyperlink';
 
 export default createStackNavigator(
 	{
-		Home
+		Home,
+		Hyperlink
 	},
 	{ // Configuração do estilo da barra de título
 		navigationOptions: {

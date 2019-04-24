@@ -1,19 +1,45 @@
-import { createStackNavigator } from 'react-navigation';
+import {
+  createAppContainer,
+  createStackNavigator,
+  createBottomTabNavigator,
+  createDrawerNavigator
+} from "react-navigation";
 
-import Home from './pages/home';
-import Hyperlink from './pages/hyperlink';
+import Home from "./pages/home";
+import Hyperlink from "./pages/hyperlink";
+import CadastroLinks from "./pages/CadastroLinks";
 
-export default createStackNavigator(
-	{
-		Home,
-		Hyperlink
-	},
-	{ // Configuração do estilo da barra de título
-		navigationOptions: {
-			headerStyle: {
-				backgroundColor: '#444'
-			},
-			headerTintColor: '#FFF'
-		}
-	}
+const defaultStyle = {
+  headerStyle: {
+    backgroundColor: "#444"
+  },
+  headerTintColor: "#FFF"
+};
+
+const TabNavigator = createBottomTabNavigator(
+  {
+    Home: Home,
+    CadastroLinks: CadastroLinks
+  },
+  {
+    tabBarOptions: {
+      activeTintColor: "tomato",
+      inactiveTintColor: "gray"
+    }
+  }
 );
+
+const StackNavigator = createStackNavigator({
+  // TabNavigator: { screen: TabNavigator },
+  Home: {
+    screen: Home,
+    navigationOptions: () => defaultStyle
+  },
+  Hyperlink,
+  CadastroLinks: {
+    screen: CadastroLinks,
+    navigationOptions: () => defaultStyle
+  }
+});
+
+export default createAppContainer(StackNavigator);

@@ -5,10 +5,6 @@ import api from "../../services/api";
 import styles from "./styles";
 
 export default class CadastroLinks extends Component {
-  static navigationOptions = {
-    title: "Cadastro de Links"
-  };
-
   state = {
     title: "",
     description: "",

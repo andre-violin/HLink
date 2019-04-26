@@ -11,10 +11,6 @@ import {
 import api from "../services/api";
 
 export default class Home extends Component {
-  static navigationOptions = {
-    title: "HLink"
-  };
-
   state = {
     productInfo: {},
     docs: [],
@@ -72,14 +68,14 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight
+        {/* <TouchableHighlight
           onPress={() => {
             this.props.navigation.navigate("CadastroLinks");
           }}
           underlayColor="white"
         >
           <Text>Cadastrar Links</Text>
-        </TouchableHighlight>
+        </TouchableHighlight> */}
         <FlatList
           contentContainerStyle={styles.list}
           data={this.state.docs}
